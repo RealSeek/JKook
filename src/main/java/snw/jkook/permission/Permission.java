@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package snw.jkook.permission;
 
-package snw.jkook.command;
-
-import snw.jkook.permission.Permission;
+import snw.jkook.command.CommandSender;
+import snw.jkook.entity.Guild;
+import snw.jkook.entity.channel.Channel;
 
 /**
- * Represents an object that can execute a command.
+ * @author huanmeng_qwq
  */
-public interface CommandSender {
+public interface Permission {
+    boolean check(Guild guild, Channel channel, CommandSender sender);
 
-    void hasPermission(Permission permission);
-
-    void hasPermission(String permission);
+    static KookPermission kook(snw.jkook.Permission permissionType) {
+        return new KookPermission(permissionType);
+    }
 }

@@ -13,17 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package snw.jkook.command;
-
-import snw.jkook.permission.Permission;
+package snw.jkook.permission;
 
 /**
- * Represents an object that can execute a command.
+ * @author huanmeng_qwq
  */
-public interface CommandSender {
-
-    void hasPermission(Permission permission);
-
-    void hasPermission(String permission);
+public interface TextPermission extends Permission {
+    String getText();
 }

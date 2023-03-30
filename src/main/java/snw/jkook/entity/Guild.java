@@ -56,9 +56,9 @@ public interface Guild extends Nameable, AvatarHolder, MasterHolder, InviteHolde
      * This method provides more conditions to use. <p>
      * All the arguments in this method will be regard as the search condition.
      *
-     * @param keyword The search keywords, search in username or nickname
-     * @param roleId The role that the users have. See {@link Role#getId()}
-     * @param isMobileVerified Is the target user's mobile verified?
+     * @param keyword           The search keywords, search in username or nickname
+     * @param roleId            The role that the users have. See {@link Role#getId()}
+     * @param isMobileVerified  Is the target user's mobile verified?
      * @param isActiveTimeFirst Sort according to active time, <code>true</code> is in order, <code>false</code> is in reverse order
      * @param isJoinedTimeFirst Sort according to joined time, <code>true</code> is in order, <code>false</code> is in reverse order
      */
@@ -79,6 +79,11 @@ public interface Guild extends Nameable, AvatarHolder, MasterHolder, InviteHolde
      * Get all the roles in this guild.
      */
     PageIterator<Set<Role>> getRoles();
+
+    /**
+     * Get the role in this guild.
+     */
+    Role getRole(Integer roleId);
 
     /**
      * Get the voice server region of this guild.
@@ -144,7 +149,7 @@ public interface Guild extends Nameable, AvatarHolder, MasterHolder, InviteHolde
     /**
      * Create a text channel in this guild with given information.
      *
-     * @param name The name of the new channel
+     * @param name   The name of the new channel
      * @param parent The parent category of the new channel
      * @return The new channel representation
      */
@@ -154,9 +159,9 @@ public interface Guild extends Nameable, AvatarHolder, MasterHolder, InviteHolde
     /**
      * Create a voice channel in this guild with given information.
      *
-     * @param name The name of the new channel
-     * @param parent The parent category of the new channel
-     * @param size The max size of the new channel, determine the number of users this channel can hold
+     * @param name    The name of the new channel
+     * @param parent  The parent category of the new channel
+     * @param size    The max size of the new channel, determine the number of users this channel can hold
      * @param quality Voice quality. 1 smooth, 2 normal, 3 high quality
      * @return The new channel representation
      */
@@ -192,10 +197,10 @@ public interface Guild extends Nameable, AvatarHolder, MasterHolder, InviteHolde
      * @param binary The binary value of the emoji. Allows PNG only. The size can not exceed 512 KB.
      *               <b>Use {@link java.nio.charset.StandardCharsets#ISO_8859_1} instead of
      *               default charset when you creating the String instance for the binary value.</b>
-     * @param name The name of the new emoji. If empty, it will be a random string
+     * @param name   The name of the new emoji. If empty, it will be a random string
      * @return The new emoji representation
      * @deprecated We shouldn't use String to represent the binary values,
-     *             use {@link #uploadEmoji(byte[], String, String)} instead.
+     * use {@link #uploadEmoji(byte[], String, String)} instead.
      */
     @Deprecated
     @RequirePermission(Permission.EMOJI_MANAGE)
@@ -205,9 +210,9 @@ public interface Guild extends Nameable, AvatarHolder, MasterHolder, InviteHolde
      * Upload an emoji to this guild.
      *
      * @param binary The binary value of the emoji. The size can not exceed 512 KB.
-     * @param type The media type string of the emoji. Only support PNG, JPG, JPEG, GIF.
-     *             (e.g. "image/png")
-     * @param name The name of the new emoji. If empty, it will be a random string
+     * @param type   The media type string of the emoji. Only support PNG, JPG, JPEG, GIF.
+     *               (e.g. "image/png")
+     * @param name   The name of the new emoji. If empty, it will be a random string
      * @return The new emoji representation
      * @throws IllegalArgumentException Thrown if the media type is invalid, or the length of
      *                                  the emoji name is not greater or equals 2.
@@ -239,9 +244,9 @@ public interface Guild extends Nameable, AvatarHolder, MasterHolder, InviteHolde
     /**
      * Get the boost information in the provided time range. <br>
      * The timestamp is in <b>seconds</b>.
-     * 
+     *
      * @param start The start of the range
-     * @param end The end of the range
+     * @param end   The end of the range
      * @throws IllegalArgumentException Thrown if the "start" timestamp is greater than the "end" timestamp, or one of them is negative.
      */
     @RequirePermission(Permission.OPERATOR)

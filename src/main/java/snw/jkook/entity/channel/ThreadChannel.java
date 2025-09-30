@@ -47,8 +47,6 @@ import java.util.Collection;
  * <p><b>Usage Example:</b>
  * <pre>{@code
  * ThreadChannel threadChannel = (ThreadChannel) guild.getChannelById("channel_id");
- * String topic = threadChannel.getTopic();
- * threadChannel.setTopic("New discussion topic");
  *
  * // Create a new thread
  * Thread thread = threadChannel.createThread("Title", "Content", null);
@@ -63,27 +61,6 @@ import java.util.Collection;
  * @since 0.55.0
  */
 public interface ThreadChannel extends NonCategoryChannel {
-
-    /**
-     * Get the topic (description) of this thread channel.
-     *
-     * <p>The topic provides a brief description of what this thread channel is for,
-     * helping users understand the channel's purpose before participating.
-     *
-     * @return The topic string, or an empty string if not set
-     */
-    String getTopic();
-
-    /**
-     * Set the topic (description) of this thread channel.
-     *
-     * <p>The topic should provide a clear description of the thread channel's purpose.
-     * Maximum length may be subject to platform limitations.
-     *
-     * @param topic The new topic content
-     * @throws IllegalArgumentException if the topic is null or exceeds maximum length
-     */
-    void setTopic(String topic);
 
     /**
      * Create a new thread (post) in this channel.
@@ -170,9 +147,12 @@ public interface ThreadChannel extends NonCategoryChannel {
          * <p>This collection contains specific permission settings for individual roles
          * and users that override the default category permissions.
          *
-         * @return A collection of category permission overrides
+         * <p>The returned collection may contain both {@link Channel.RolePermissionOverwrite}
+         * and {@link Channel.UserPermissionOverwrite} instances.
+         *
+         * @return A collection of permission overrides (roles and users)
          */
-        Collection<CategoryPermissionOverride> getRoles();
+        Collection<Channel.PermissionOverwrite<?>> getRoles();
 
         /**
          * Check if this is the default "All" category.
@@ -180,41 +160,6 @@ public interface ThreadChannel extends NonCategoryChannel {
          * @return True if this is the default category
          */
         boolean isDefault();
-    }
-
-    /**
-     * Represents a permission override for a specific role or user within a thread category.
-     *
-     * @since 0.55.0
-     */
-    interface CategoryPermissionOverride {
-        /**
-         * Get the type of this permission override.
-         *
-         * @return "role" for role permissions, "user" for user permissions
-         */
-        String getType();
-
-        /**
-         * Get the role ID if this is a role permission override.
-         *
-         * @return The role ID, or 0 if this is a user permission
-         */
-        int getRoleId();
-
-        /**
-         * Get the user ID if this is a user permission override.
-         *
-         * @return The user ID, or empty string if this is a role permission
-         */
-        String getUserId();
-
-        /**
-         * Get the allow permission value for this override.
-         *
-         * @return The allow permission bitmask
-         */
-        int getAllow();
     }
 
 }

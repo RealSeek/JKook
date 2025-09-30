@@ -99,7 +99,9 @@ public interface Thread {
      * <p>Status values:
      * <ul>
      *   <li>0 - Normal</li>
-     *   <li>1 - Deleted</li>
+     *   <li>1 - Under review (审核中)</li>
+     *   <li>2 - Approved (审核通过)</li>
+     *   <li>3 - Edit under review (编辑审核中)</li>
      * </ul>
      *
      * @return The thread status code
@@ -118,7 +120,7 @@ public interface Thread {
      *
      * @return The creation timestamp in milliseconds
      */
-    long getTimeStamp();
+    long getCreateTime();
 
     /**
      * Get the timestamp when this thread was last active.
@@ -151,6 +153,7 @@ public interface Thread {
      *   <li>0 - Not deleted</li>
      *   <li>1 - Deleted by author</li>
      *   <li>2 - Deleted by moderator</li>
+     *   <li>3 - Deleted by review (审核删除)</li>
      * </ul>
      *
      * @return The content deletion type code

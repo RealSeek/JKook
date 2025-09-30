@@ -18,6 +18,7 @@ package snw.jkook.entity.thread;
 
 import snw.jkook.entity.User;
 import snw.jkook.entity.channel.ThreadChannel;
+import snw.jkook.message.component.card.MultipleCardComponent;
 import snw.jkook.util.PageIterator;
 
 import java.util.Collection;
@@ -76,7 +77,34 @@ public interface Thread {
      *
      * @return The thread content
      */
-    String getContent();
+    MultipleCardComponent getContent();
+
+    /**
+     * Get the preview content of this thread (plain text summary).
+     *
+     * @return The preview content string
+     */
+    String getPreviewContent();
+
+    /**
+     * Get the cover image URL for this thread.
+     *
+     * @return The cover image URL, or null if no cover is set
+     */
+    String getCover();
+
+    /**
+     * Get the status of this thread.
+     *
+     * <p>Status values:
+     * <ul>
+     *   <li>0 - Normal</li>
+     *   <li>1 - Deleted</li>
+     * </ul>
+     *
+     * @return The thread status code
+     */
+    int getStatus();
 
     /**
      * Get the category ID this thread belongs to.
@@ -93,6 +121,57 @@ public interface Thread {
     long getTimeStamp();
 
     /**
+     * Get the timestamp when this thread was last active.
+     *
+     * <p>This reflects the latest activity time including replies and updates.
+     *
+     * @return The latest active timestamp in milliseconds
+     */
+    long getLatestActiveTime();
+
+    /**
+     * Check if this thread has been edited/updated.
+     *
+     * @return True if the thread has been updated after creation
+     */
+    boolean isUpdated();
+
+    /**
+     * Check if the content has been deleted.
+     *
+     * @return True if content is deleted
+     */
+    boolean isContentDeleted();
+
+    /**
+     * Get the content deletion type.
+     *
+     * <p>Type values:
+     * <ul>
+     *   <li>0 - Not deleted</li>
+     *   <li>1 - Deleted by author</li>
+     *   <li>2 - Deleted by moderator</li>
+     * </ul>
+     *
+     * @return The content deletion type code
+     */
+    int getContentDeletedType();
+
+    /**
+     * Get the number of collections (favorites/bookmarks) for this thread.
+     *
+     * @return The collection count
+     */
+    int getCollectNum();
+
+    /**
+     * Get the tags associated with this thread.
+     *
+     * @return A collection of tag strings
+     */
+    Collection<String> getTags();
+
+    /**
      * Get the number of replies to this thread.
      *
      * @return The reply count
@@ -105,13 +184,6 @@ public interface Thread {
      * @return The view count
      */
     int getViewCount();
-
-    /**
-     * Check if this thread is pinned.
-     *
-     * @return True if the thread is pinned
-     */
-    boolean isPinned();
 
     /**
      * Get all replies (posts) to this thread.

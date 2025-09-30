@@ -126,6 +126,9 @@ public interface ThreadChannel extends NonCategoryChannel {
     /**
      * Represents a category in a thread channel.
      *
+     * <p>Categories control permissions for organizing threads and managing access.
+     * Each category has default allow/deny permissions and can have specific role/user overrides.
+     *
      * @since 0.55.0
      */
     interface ThreadCategory {
@@ -144,11 +147,74 @@ public interface ThreadChannel extends NonCategoryChannel {
         String getName();
 
         /**
+         * Get the default allow permission value for this category.
+         *
+         * <p>This is a bitmask representing permissions that are granted by default.
+         *
+         * @return The allow permission value (default: 0)
+         */
+        int getAllow();
+
+        /**
+         * Get the default deny permission value for this category.
+         *
+         * <p>This is a bitmask representing permissions that are denied by default.
+         *
+         * @return The deny permission value (default: 0)
+         */
+        int getDeny();
+
+        /**
+         * Get the role and user permission overrides for this category.
+         *
+         * <p>This collection contains specific permission settings for individual roles
+         * and users that override the default category permissions.
+         *
+         * @return A collection of category permission overrides
+         */
+        Collection<CategoryPermissionOverride> getRoles();
+
+        /**
          * Check if this is the default "All" category.
          *
          * @return True if this is the default category
          */
         boolean isDefault();
+    }
+
+    /**
+     * Represents a permission override for a specific role or user within a thread category.
+     *
+     * @since 0.55.0
+     */
+    interface CategoryPermissionOverride {
+        /**
+         * Get the type of this permission override.
+         *
+         * @return "role" for role permissions, "user" for user permissions
+         */
+        String getType();
+
+        /**
+         * Get the role ID if this is a role permission override.
+         *
+         * @return The role ID, or 0 if this is a user permission
+         */
+        int getRoleId();
+
+        /**
+         * Get the user ID if this is a user permission override.
+         *
+         * @return The user ID, or empty string if this is a role permission
+         */
+        String getUserId();
+
+        /**
+         * Get the allow permission value for this override.
+         *
+         * @return The allow permission bitmask
+         */
+        int getAllow();
     }
 
 }

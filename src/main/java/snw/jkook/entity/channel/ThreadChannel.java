@@ -16,6 +16,12 @@
 
 package snw.jkook.entity.channel;
 
+import org.jetbrains.annotations.Nullable;
+import snw.jkook.entity.thread.Thread;
+import snw.jkook.util.PageIterator;
+
+import java.util.Collection;
+
 /**
  * Represents a thread channel (帖子频道).
  *
@@ -43,8 +49,16 @@ package snw.jkook.entity.channel;
  * ThreadChannel threadChannel = (ThreadChannel) guild.getChannelById("channel_id");
  * String topic = threadChannel.getTopic();
  * threadChannel.setTopic("New discussion topic");
+ *
+ * // Create a new thread
+ * Thread thread = threadChannel.createThread("Title", "Content", null);
+ *
+ * // Reply to the thread
+ * thread.reply("My reply");
  * }</pre>
  *
+ * @see snw.jkook.entity.thread.Thread
+ * @see snw.jkook.entity.thread.ThreadPost
  * @see <a href="https://developer.kookapp.cn/doc/http/thread">KOOK Thread Channel Documentation</a>
  * @since 0.55.0
  */
@@ -70,5 +84,71 @@ public interface ThreadChannel extends NonCategoryChannel {
      * @throws IllegalArgumentException if the topic is null or exceeds maximum length
      */
     void setTopic(String topic);
+
+    /**
+     * Create a new thread (post) in this channel.
+     *
+     * @param title The thread title
+     * @param content The thread content (supports rich media: text + images)
+     * @param categoryId The category ID to organize this thread, null for default category
+     * @return The created thread
+     * @throws IllegalArgumentException if title or content is null or empty
+     */
+    Thread createThread(String title, String content, @Nullable String categoryId);
+
+    /**
+     * Get a specific thread by its ID.
+     *
+     * @param threadId The thread ID
+     * @return The thread, or null if not found
+     */
+    @Nullable
+    Thread getThread(String threadId);
+
+    /**
+     * Get threads in this channel with pagination.
+     *
+     * @param categoryId The category ID to filter threads, null for all threads
+     * @return A page iterator for threads
+     */
+    PageIterator<Collection<Thread>> getThreads(@Nullable String categoryId);
+
+    /**
+     * Get all available categories in this thread channel.
+     *
+     * <p>Categories are used to organize threads into different topics or sections.
+     * The returned collection includes both the default "All" category and custom categories.
+     *
+     * @return A collection of category IDs and names
+     */
+    Collection<ThreadCategory> getCategories();
+
+    /**
+     * Represents a category in a thread channel.
+     *
+     * @since 0.55.0
+     */
+    interface ThreadCategory {
+        /**
+         * Get the category ID.
+         *
+         * @return The category ID
+         */
+        String getId();
+
+        /**
+         * Get the category name.
+         *
+         * @return The category name
+         */
+        String getName();
+
+        /**
+         * Check if this is the default "All" category.
+         *
+         * @return True if this is the default category
+         */
+        boolean isDefault();
+    }
 
 }

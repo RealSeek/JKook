@@ -15,124 +15,196 @@
  */
 
 package snw.jkook.entity.thread;
-import snw.jkook.message.component.card.MultipleCardComponent;
 
 import snw.jkook.entity.User;
+import snw.jkook.entity.channel.ThreadChannel;
+import snw.jkook.message.component.card.MultipleCardComponent;
+import snw.jkook.util.PageIterator;
 
 import java.util.Collection;
 
 /**
- * Represents a post (reply) in a thread.
+ * Represents a thread post (main post/topic) in a thread channel.
  *
- * <p>A thread post is a response to a thread's main content. Posts support rich media
- * content (text + images) and can have nested replies (楼中楼).
+ * <p>A thread is the main content unit in KOOK thread channels, similar to a forum post or topic.
+ * It contains a title, content (text + images), and can have multiple replies.
  *
- * <p><b>Content Restrictions:</b>
+ * <p><b>Thread Structure:</b>
  * <ul>
- *   <li>Main replies: Support rich media (text + images)</li>
- *   <li>Nested replies: Only support KMD format and emojis</li>
+ *   <li>Main post (thread itself) - Rich media content (text + images)</li>
+ *   <li>Replies - Rich media responses to the main post</li>
+ *   <li>Nested replies (楼中楼) - KMD and emoji-only responses to replies</li>
  * </ul>
  *
- * @see Thread
+ * @see ThreadReply
+ * @see ThreadChannel
  * @since 0.55.0
  */
 public interface ThreadPost {
 
     /**
-     * Get the unique identifier of this post.
+     * Get the unique identifier of this thread.
      *
-     * @return The post ID
+     * @return The thread ID
      */
     String getId();
 
     /**
-     * Get the thread this post belongs to.
+     * Get the thread channel that contains this thread.
      *
-     * @return The parent thread
+     * @return The parent thread channel
      */
-    Thread getThread();
+    ThreadChannel getChannel();
 
     /**
-     * Get the author of this post.
+     * Get the author of this thread.
      *
-     * @return The user who created this post
+     * @return The user who created this thread
      */
     User getAuthor();
 
     /**
-     * Get the content of this post.
+     * Get the title of this thread.
      *
-     * <p>The content format depends on whether this is a main reply or nested reply.
+     * @return The thread title
+     */
+    String getTitle();
+
+    /**
+     * Get the content of this thread.
      *
-     * @return The post content
+     * <p>The content supports rich media format (text + images).
+     *
+     * @return The thread content
      */
     MultipleCardComponent getContent();
 
     /**
-     * Get the timestamp when this post was created.
+     * Get the preview content of this thread (plain text summary).
+     *
+     * @return The preview content string
+     */
+    String getPreviewContent();
+
+    /**
+     * Get the cover image URL for this thread.
+     *
+     * @return The cover image URL, or null if no cover is set
+     */
+    String getCover();
+
+    /**
+     * Get the status of this thread.
+     *
+     * <p>Status values:
+     * <ul>
+     *   <li>0 - Normal</li>
+     *   <li>1 - Under review (审核中)</li>
+     *   <li>2 - Approved (审核通过)</li>
+     *   <li>3 - Edit under review (编辑审核中)</li>
+     * </ul>
+     *
+     * @return The thread status code
+     */
+    int getStatus();
+
+    /**
+     * Get the category ID this thread belongs to.
+     *
+     * @return The category ID, or null if not categorized
+     */
+    String getCategoryId();
+
+    /**
+     * Get the timestamp when this thread was created.
      *
      * @return The creation timestamp in milliseconds
      */
-    long getTimeStamp();
+    long getCreateTime();
 
     /**
-     * Check if this is a nested reply (楼中楼).
+     * Get the timestamp when this thread was last active.
      *
-     * @return True if this is a nested reply
+     * <p>This reflects the latest activity time including replies and updates.
+     *
+     * @return The latest active timestamp in milliseconds
      */
-    boolean isNestedReply();
+    long getLatestActiveTime();
 
     /**
-     * Get the ID of the main floor post this reply belongs to (belong_to_post_id in API response).
+     * Check if this thread has been edited/updated.
      *
-     * <p>This identifies which main floor post this reply is attached to.
-     * All replies and nested replies under the same main floor will have the same belong_to_post_id.
-     *
-     * <p><b>Example:</b>
-     * <pre>
-     * Thread
-     * ├─ Post #001 (main floor)
-     * │  └─ Post #002 (belong_to_post_id: "001") ← belongs to main floor #001
-     * │     └─ Post #003 (belong_to_post_id: "001") ← still belongs to main floor #001
-     * </pre>
-     *
-     * @return The main floor post ID, or null if this is a main floor post itself
-     */
-    String getBelongToPostId();
-
-    /**
-     * Get the ID of the post this is directly replying to (reply_id in API response).
-     *
-     * <p>This is used for nested replies (楼中楼) to identify which specific post
-     * this reply is responding to.
-     *
-     * <p><b>Example:</b>
-     * <pre>
-     * Post #001 (main floor)
-     * └─ Post #002 (reply_id: null) ← direct reply to main floor
-     *    └─ Post #003 (reply_id: "002") ← nested reply to #002
-     * </pre>
-     *
-     * @return The direct parent post ID, or null if this is a direct reply to the thread
-     */
-    String getReplyToPostId();
-
-    /**
-     * Get all nested replies to this post (楼中楼).
-     *
-     * @return A collection of nested reply posts, or empty if no replies
-     */
-    Collection<ThreadPost> getReplies();
-
-    /**
-     * Check if this post has been edited/updated.
-     *
-     * @return True if the post has been updated after creation
+     * @return True if the thread has been updated after creation
      */
     boolean isUpdated();
 
     /**
-     * Delete this post.
+     * Check if the content has been deleted.
+     *
+     * @return True if content is deleted
+     */
+    boolean isContentDeleted();
+
+    /**
+     * Get the content deletion type.
+     *
+     * <p>Type values:
+     * <ul>
+     *   <li>0 - Not deleted</li>
+     *   <li>1 - Deleted by author</li>
+     *   <li>2 - Deleted by moderator</li>
+     *   <li>3 - Deleted by review (审核删除)</li>
+     * </ul>
+     *
+     * @return The content deletion type code
+     */
+    int getContentDeletedType();
+
+    /**
+     * Get the number of collections (favorites/bookmarks) for this thread.
+     *
+     * @return The collection count
+     */
+    int getCollectNum();
+
+    /**
+     * Get the tags associated with this thread.
+     *
+     * @return A collection of tag strings
+     */
+    Collection<String> getTags();
+
+    /**
+     * Get the number of replies to this thread.
+     *
+     * @return The reply count
+     */
+    int getReplyCount();
+
+    /**
+     * Get the number of views for this thread.
+     *
+     * @return The view count
+     */
+    int getViewCount();
+
+    /**
+     * Get all replies (posts) to this thread.
+     *
+     * @return A page iterator for thread replies
+     */
+    PageIterator<Collection<ThreadReply>> getReplies();
+
+    /**
+     * Reply to this thread.
+     *
+     * @param content The reply content (supports rich media)
+     * @return The created thread reply
+     */
+    ThreadReply reply(String content);
+
+    /**
+     * Delete this thread.
      *
      * <p><b>Note:</b> This action requires appropriate permissions.
      *

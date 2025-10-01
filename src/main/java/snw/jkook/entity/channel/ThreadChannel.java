@@ -17,7 +17,7 @@
 package snw.jkook.entity.channel;
 
 import org.jetbrains.annotations.Nullable;
-import snw.jkook.entity.thread.Thread;
+import snw.jkook.entity.thread.ThreadPost;
 import snw.jkook.util.PageIterator;
 
 import java.util.Collection;
@@ -49,14 +49,14 @@ import java.util.Collection;
  * ThreadChannel threadChannel = (ThreadChannel) guild.getChannelById("channel_id");
  *
  * // Create a new thread
- * Thread thread = threadChannel.createThread("Title", "Content", null);
+ * ThreadPost thread = threadChannel.createThread("Title", "Content", null);
  *
  * // Reply to the thread
  * thread.reply("My reply");
  * }</pre>
  *
- * @see snw.jkook.entity.thread.Thread
  * @see snw.jkook.entity.thread.ThreadPost
+ * @see snw.jkook.entity.thread.ThreadReply
  * @see <a href="https://developer.kookapp.cn/doc/http/thread">KOOK Thread Channel Documentation</a>
  * @since 0.55.0
  */
@@ -68,10 +68,10 @@ public interface ThreadChannel extends NonCategoryChannel {
      * @param title The thread title
      * @param content The thread content (supports rich media: text + images)
      * @param categoryId The category ID to organize this thread, null for default category
-     * @return The created thread
+     * @return The created thread post
      * @throws IllegalArgumentException if title or content is null or empty
      */
-    Thread createThread(String title, String content, @Nullable String categoryId);
+    ThreadPost createThread(String title, String content, @Nullable String categoryId);
 
     /**
      * Get a specific thread by its ID.
@@ -80,7 +80,7 @@ public interface ThreadChannel extends NonCategoryChannel {
      * @return The thread, or null if not found
      */
     @Nullable
-    Thread getThread(String threadId);
+    ThreadPost getThread(String threadId);
 
     /**
      * Get threads in this channel with pagination.
@@ -88,7 +88,7 @@ public interface ThreadChannel extends NonCategoryChannel {
      * @param categoryId The category ID to filter threads, null for all threads
      * @return A page iterator for threads
      */
-    PageIterator<Collection<Thread>> getThreads(@Nullable String categoryId);
+    PageIterator<Collection<ThreadPost>> getThreads(@Nullable String categoryId);
 
     /**
      * Get all available categories in this thread channel.

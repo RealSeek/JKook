@@ -76,11 +76,11 @@ public interface ThreadChannel extends NonCategoryChannel {
     /**
      * Get a specific thread by its ID.
      *
-     * @param threadId The thread ID
+     * @param threadPostId The thread post ID
      * @return The thread, or null if not found
      */
     @Nullable
-    ThreadPost getThread(String threadId);
+    ThreadPost getThreadPost(String threadPostId);
 
     /**
      * Get threads in this channel with pagination.
@@ -88,7 +88,7 @@ public interface ThreadChannel extends NonCategoryChannel {
      * @param categoryId The category ID to filter threads, null for all threads
      * @return A page iterator for threads
      */
-    PageIterator<Collection<ThreadPost>> getThreads(@Nullable String categoryId);
+    PageIterator<Collection<ThreadPost>> getThreadPosts(@Nullable String categoryId);
 
     /**
      * Get all available categories in this thread channel.
